@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 丙午年新春靈籤</title>
+    
+    <!-- 設定 Open Graph 標籤 -->
+    <meta property="og:title" content="2026 丙午年新春靈籤">
+    <meta property="og:description" content="誠心祈求，指點迷津。快來抽取您的 2026 年專屬運勢籤詩！">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1548685913-fe6678b42609?q=80&w=1200&auto=format&fit=crop">
+
+    <!-- 引入 React 和 ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- 引入 Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 自定義字型與動畫樣式 -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        @keyframes shake {
+          0% { transform: translate(1px, 1px) rotate(0deg); }
+          10% { transform: translate(-1px, -2px) rotate(-1deg); }
+          20% { transform: translate(-3px, 0px) rotate(1deg); }
+          30% { transform: translate(3px, 2px) rotate(0deg); }
+          40% { transform: translate(1px, -1px) rotate(1deg); }
+          50% { transform: translate(-1px, 2px) rotate(-1deg); }
+          60% { transform: translate(-3px, 1px) rotate(0deg); }
+          70% { transform: translate(3px, 1px) rotate(-1deg); }
+          80% { transform: translate(-1px, -1px) rotate(1deg); }
+          90% { transform: translate(1px, 2px) rotate(0deg); }
+          100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        .animate-shake {
+          animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite;
+        }
+        .writing-vertical {
+          writing-mode: vertical-rl;
+          text-orientation: upright;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes flipIn {
+          0% { opacity: 0; transform: rotateY(90deg) scale(0.8); }
+          100% { opacity: 1; transform: rotateY(0) scale(1); }
+        }
+        .animate-flip-in {
+          animation: flipIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          perspective: 1000px;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Icons Components ---
+        const Sparkles = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 9h4"/></svg>
+        );
+        const Briefcase = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
+        );
+        const Heart = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 14c1.49-1.28 3-2.5 3-4.74 0-2.3-2.1-4.26-4.5-4.26-2.1 0-3.9 1.5-4.5 3.5-.6-2-2.4-3.5-4.5-3.5C3.1 5 1 6.96 1 9.26c0 2.24 1.5 3.46 3 4.74L12 21l8-7z"/></svg>
+        );
+        const Home = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        );
+        const Coins = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7 .71-2.82 2.82"/></svg>
+        );
+        const RotateCcw = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        );
+        const Share2 = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+        );
+        const Copy = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        );
+        const Check = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 6 9 17l-5-5"/></svg>
+        );
+        const Gift = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>
+        );
+
+        // -----------------------------------------------------------------------------
+        // 資料設定
+        // -----------------------------------------------------------------------------
+        
+        // 折扣列表與權重
+        const DISCOUNTS = [
+            { id: 'prize_1', text: '1 元驚喜價', weight: 1, desc: '鴻運當頭！超級大獎' },
+            { id: 'prize_149', text: '單人票 8 折', weight: 9, desc: '恭喜發財！馬到成功' },
+            { id: 'prize_80', text: '單人票 85 折', weight: 10, desc: '好運降臨！馬上有錢' },
+            { id: 'prize_85', text: '單人票 9 折', weight: 30, desc: '福氣滿滿！心猿意馬' },
+            { id: 'prize_90', text: '再接再厲', weight: 50, desc: '新年快樂！駿馬總會遇伯樂！' }
+        ];
+
+        const FORTUNES = [
+          { level: "大吉", type: "事業", title: "馬到成功", poem: ["千里駿馬遇伯樂", "鵬程萬里展宏圖", "貴人指引登高峰", "事業亨通步步高"], desc: "今年事業運勢如日中天，有晉升或創業的良機，勇往直前必有收穫。", icon: <Briefcase className="w-6 h-6" /> },
+          { level: "大吉", type: "愛情", title: "天作之合", poem: ["良緣夙締喜相逢", "月老紅線緊相牽", "花好月圓人長久", "情深意重福滿門"], desc: "單身者將遇見真命天子/天女，有伴者感情甜蜜，適合談婚論嫁。", icon: <Heart className="w-6 h-6" /> },
+          { level: "大吉", type: "家庭", title: "闔家安康", poem: ["瑞氣盈門福壽全", "子孫賢孝樂團圓", "家和萬事皆興旺", "喜氣洋洋過好年"], desc: "家庭氣氛和諧，長輩健康，晚輩乖巧，家中應有喜事發生。", icon: <Home className="w-6 h-6" /> },
+          { level: "大吉", type: "財運", title: "財源廣進", poem: ["金銀財寶滾滾來", "投資理財眼光開", "正財偏財皆得意", "富貴榮華不需猜"], desc: "財星高照，無論是工作獎金或投資獲利都相當豐厚。", icon: <Coins className="w-6 h-6" /> },
+          
+          { level: "中吉", type: "事業", title: "穩步高升", poem: ["耕耘數載見花開", "雖然勞碌亦無災", "堅守崗位多努力", "功名利祿自然來"], desc: "工作表現穩定，雖有些許忙碌，但付出都能得到對等的回報。", icon: <Briefcase className="w-6 h-6" /> },
+          { level: "中吉", type: "愛情", title: "心心相印", poem: ["即使偶有小風波", "雨過天晴情更多", "互相包容解心結", "琴瑟和鳴樂呵呵"], desc: "感情穩定發展，多溝通能化解小誤會，關係會更加緊密。", icon: <Heart className="w-6 h-6" /> },
+          { level: "中吉", type: "家庭", title: "知足常樂", poem: ["平平安安即是福", "莫與他人比財祿", "且看庭前花開落", "家中自有黃金屋"], desc: "生活平順就是最大的福氣，珍惜與家人相處的時光。", icon: <Home className="w-6 h-6" /> },
+          { level: "中吉", type: "財運", title: "積沙成塔", poem: ["小財源源不斷流", "節約開支不用愁", "聚沙成塔庫房滿", "穩健經營最優遊"], desc: "財運平穩，適合儲蓄與保守型投資，切勿貪圖暴利。", icon: <Coins className="w-6 h-6" /> },
+          
+          { level: "小吉", type: "事業", title: "蓄勢待發", poem: ["目前雖在低谷行", "莫灰心志莫停停", "待到春風吹柳綠", "一舉成名天下聞"], desc: "現在是累積實力的時期，保持耐心，機會即將到來。", icon: <Briefcase className="w-6 h-6" /> },
+          { level: "小吉", type: "愛情", title: "細水長流", poem: ["緣分未到莫強求", "順其自然解千愁", "若是真心相待處", "春暖花開水長流"], desc: "感情進展較慢，不要急躁，慢慢培養感情會更長久。", icon: <Heart className="w-6 h-6" /> },
+          { level: "小吉", type: "家庭", title: "和氣生財", poem: ["瑣碎家事莫計較", "退讓一步樂逍遙", "相互體諒多寬慰", "門庭吉慶喜眉梢"], desc: "家中瑣事較多，多一點包容與體諒，能避免不必要的口角。", icon: <Home className="w-6 h-6" /> },
+          { level: "小吉", type: "財運", title: "小有所獲", poem: ["意外之財不可貪", "踏實工作心才安", "量入為出多算計", "自有餘糧在盤餐"], desc: "有些許偏財運，但主要還是靠正財，注意收支平衡。", icon: <Coins className="w-6 h-6" /> },
+          
+          { level: "末吉", type: "事業", title: "守成不易", poem: ["風浪之中舟難行", "且將帆落待天晴", "謹言慎行防小人", "守得雲開見月明"], desc: "職場風波較多，宜低調行事，保守為上，等待時機好轉。", icon: <Briefcase className="w-6 h-6" /> },
+          { level: "末吉", type: "愛情", title: "自愛自重", poem: ["落花有意水無情", "何必單戀一枝盈", "修身養性待良緣", "自有佳人伴君行"], desc: "目前緣分未到或有波折，先專注於提升自己，花若盛開蝴蝶自來。", icon: <Heart className="w-6 h-6" /> },
+          { level: "末吉", type: "家庭", title: "除舊佈新", poem: ["舊習未除新運阻", "當思變通換門戶", "多行善事積陰德", "枯木逢春再發株"], desc: "家庭可能面臨一些變動或考驗，是改變壞習慣的好時機。", icon: <Home className="w-6 h-6" /> },
+          { level: "末吉", type: "財運", title: "謹慎理財", poem: ["錢財身外莫強求", "投資失利令人憂", "安分守己勤耕作", "免得債務上心頭"], desc: "今年財運較弱，切忌借貸與高風險投資，保守儲蓄為上策。", icon: <Coins className="w-6 h-6" /> }
+        ];
+
+        // -----------------------------------------------------------------------------
+        // App Component
+        // -----------------------------------------------------------------------------
+        function App() {
+          const [state, setState] = useState('START');
+          const [fortune, setFortune] = useState(null);
+          const [discount, setDiscount] = useState(null);
+          const [showCopyTip, setShowCopyTip] = useState(false);
+          const [tipMessage, setTipMessage] = useState("已複製");
+		  
+			// --- 頂部 Logo 設定 (原本是 VOLARE 行動飛行劇院) ---
+			// 若要使用圖片 Logo，請將下方的 URL 替換為您的圖片網址 (例如 'https://example.com/logo.png')
+			// 暫時使用 Placehold 圖片方便您預覽
+			const TOP_LOGO_URL = "https://i.meee.com.tw/THL1ArX.png";
+			
+          
+		  // 權重抽獎邏輯
+          const drawWithWeight = () => {
+            const totalWeight = DISCOUNTS.reduce((sum, item) => sum + item.weight, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (const item of DISCOUNTS) {
+                if (random < item.weight) {
+                    return item;
+                }
+                random -= item.weight;
+            }
+            return DISCOUNTS[DISCOUNTS.length - 1]; // Fallback
+          };
+
+          const drawFortune = () => {
+            setState('ANIMATING');
+            setShowCopyTip(false);
+            
+            setTimeout(() => {
+              // 1. 抽籤詩
+              const randomIndex = Math.floor(Math.random() * FORTUNES.length);
+              setFortune(FORTUNES[randomIndex]);
+              
+              // 2. 抽折扣
+              setDiscount(drawWithWeight());
+              
+              setState('RESULT');
+            }, 3000);
+          };
+
+          const reset = () => {
+            setFortune(null);
+            setDiscount(null);
+            setState('START');
+            setShowCopyTip(false);
+          };
+
+          const showTip = (msg) => {
+            setTipMessage(msg);
+            setShowCopyTip(true);
+            setTimeout(() => setShowCopyTip(false), 2500);
+          };
+
+          const handleShare = async () => {
+            if (!fortune || !discount) return;
+            const shareData = {
+              title: `2026新春靈籤 - ${fortune.title}`,
+              text: `我在2026新春靈籤求到了「${fortune.level}」！\n\n【${fortune.title}】\n${fortune.poem.join('\n')}\n\n★ 新春加碼：${discount.text} (${discount.desc})\n\n解曰：${fortune.desc}\n\n快來求一支你的專屬靈籤吧！`,
+              url: window.location.href
+            };
+
+            if (navigator.share) {
+              try {
+                await navigator.share(shareData);
+              } catch (err) {
+                console.log('分享取消或不支援，改為複製:', err);
+                handleCopy(true);
+              }
+            } else {
+              handleCopy(true);
+            }
+          };
+
+          const handleCopy = (isFallback = false) => {
+            if (!fortune || !discount) return;
+            const text = `【${fortune.title}】(${fortune.level})\n${fortune.poem.join('\n')}\n\n★ 新春加碼：${discount.text}\n解曰：${fortune.desc}\n#2026新春靈籤`;
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(() => {
+                showTip(isFallback ? "瀏覽器不支援分享，已複製籤文" : "籤文已複製");
+              }).catch(err => {
+                console.warn('Clipboard API blocked, switching to legacy method:', err);
+                legacyCopy(text, isFallback);
+              });
+            } else {
+              legacyCopy(text, isFallback);
+            }
+          };
+
+          const legacyCopy = (text, isFallback) => {
+            try {
+              const textArea = document.createElement("textarea");
+              textArea.value = text;
+              textArea.style.top = "0";
+              textArea.style.left = "0";
+              textArea.style.position = "fixed";
+              textArea.style.opacity = "0";
+              document.body.appendChild(textArea);
+              textArea.focus();
+              textArea.select();
+              const successful = document.execCommand('copy');
+              document.body.removeChild(textArea);
+              
+              if (successful) {
+                showTip(isFallback ? "瀏覽器不支援分享，已複製籤文" : "籤文已複製");
+              } else {
+                showTip("複製失敗，請手動截圖");
+              }
+            } catch (err) {
+              console.error('Legacy copy failed:', err);
+              showTip("複製失敗，請手動截圖");
+            }
+          };
+
+          return (
+            <div className="min-h-screen bg-[#8B0000] flex flex-col items-center justify-center p-4 font-serif overflow-hidden relative">
+             {/* 背景雲紋 */}
+              <div className="absolute inset-0 pointer-events-none opacity-20">
+               <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                 <pattern id="cloud" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                    <path d="M20,50 Q35,35 50,50 T80,50" fill="none" stroke="#FFD700" strokeWidth="2"/>
+                    <path d="M10,80 Q35,65 60,80 T100,80" fill="none" stroke="#FFD700" strokeWidth="2"/>
+                 </pattern>
+                 <rect width="100%" height="100%" fill="url(#cloud)"/>
+               </svg>
+              </div>
+
+              {/* 燈籠 */}
+              <div className="absolute top-0 left-4 md:left-10 w-16 md:w-24 animate-bounce" style={{animationDuration: '3s'}}>
+                <div className="w-full h-20 md:h-32 bg-red-600 rounded-lg border-2 border-yellow-400 shadow-[0_0_15px_rgba(255,215,0,0.5)] flex items-center justify-center relative">
+                  <span className="text-yellow-400 font-bold text-2xl md:text-4xl writing-vertical">春</span>
+                  <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-1 h-4 bg-yellow-600"></div>
+                  <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-yellow-500 text-xs">|||</div>
+                </div>
+              </div>
+              <div className="absolute top-0 right-4 md:right-10 w-16 md:w-24 animate-bounce" style={{animationDuration: '4s'}}>
+                <div className="w-full h-20 md:h-32 bg-red-600 rounded-lg border-2 border-yellow-400 shadow-[0_0_15px_rgba(255,215,0,0.5)] flex items-center justify-center relative">
+                  <span className="text-yellow-400 font-bold text-2xl md:text-4xl writing-vertical">福</span>
+                  <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-1 h-4 bg-yellow-600"></div>
+                  <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-yellow-500 text-xs">|||</div>
+                </div>
+              </div>
+			  
+             {/* 標題與 Logo 區塊 */}
+              <div className="z-10 text-center mb-8 mt-8 md:mt-12">
+                
+                {/* 最上方：VOLARE 行動飛行劇院 或 Logo */}
+                <div className="mb-4">
+                  {TOP_LOGO_URL ? (
+                    <img 
+                      src={TOP_LOGO_URL} 
+                      alt="Brand Logo" 
+                      className="h-14 md:h-18 mx-auto object-contain" // 調整高度使其適合頂部
+                    />
+                  ) : (
+                    <div className="inline-block px-6 py-2 border-2 border-yellow-500 rounded-full bg-red-900/80 backdrop-blur-sm">
+                      <span className="text-yellow-400 font-medium tracking-widest">VOLARE 行動飛行劇院</span>
+                    </div>
+                  )}
+                </div>
+
+                <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-yellow-600 drop-shadow-md tracking-wider" style={{ fontFamily: '"Noto Serif TC", serif' }}>
+                  新春靈籤
+                </h1>
+                <p className="text-yellow-200/80 mt-2 text-lg">誠心祈求 · 指點迷津</p>
+              </div>
+
+              {/* 主要互動區 */}
+              <div className="z-10 w-full max-w-md aspect-[3/4] flex flex-col items-center justify-center relative mx-auto">
+                
+                {state === 'START' && (
+                  <div className="flex flex-col items-center justify-center w-full h-full animate-fade-in">
+                    <div 
+                      className="cursor-pointer group relative transition-transform hover:scale-105 active:scale-95"
+                      onClick={drawFortune}
+                    >
+                      <div className="w-40 h-64 bg-gradient-to-r from-neutral-800 to-neutral-700 rounded-t-lg rounded-b-3xl border-4 border-yellow-600 relative flex justify-center shadow-2xl mx-auto">
+                        <div className="absolute top-4 w-full h-8 bg-black/30 border-y border-yellow-600/50"></div>
+                        <div className="absolute bottom-10 w-full h-20 bg-red-900/80 flex items-center justify-center border-y-2 border-yellow-500">
+                           <div className="w-16 h-16 border-2 border-yellow-500 rotate-45 flex items-center justify-center">
+                              <span className="text-yellow-400 font-bold text-2xl -rotate-45">籤</span>
+                           </div>
+                        </div>
+                        <div className="absolute -top-8 w-2 h-12 bg-yellow-100 border border-yellow-700 rounded-t transform -rotate-12 left-10"></div>
+                        <div className="absolute -top-6 w-2 h-10 bg-yellow-100 border border-yellow-700 rounded-t transform rotate-6 right-12"></div>
+                        <div className="absolute -top-10 w-2 h-14 bg-yellow-100 border border-yellow-700 rounded-t transform -rotate-3 left-16 z-0"></div>
+                      </div>
+                      
+                      <div className="mt-8 px-8 py-3 bg-gradient-to-r from-yellow-500 to-yellow-700 text-white text-xl font-bold rounded-full shadow-lg border-2 border-yellow-300 flex items-center gap-2 group-hover:shadow-[0_0_20px_rgba(255,215,0,0.6)] transition-all mx-auto">
+                        <Sparkles className="w-5 h-5 animate-pulse" />
+                        點擊求籤
+                        <Sparkles className="w-5 h-5 animate-pulse" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {state === 'ANIMATING' && (
+                  <div className="flex flex-col items-center justify-center w-full h-full">
+                    <div className="animate-shake w-40 h-64 bg-gradient-to-r from-neutral-800 to-neutral-700 rounded-t-lg rounded-b-3xl border-4 border-yellow-600 relative flex justify-center shadow-2xl mx-auto">
+                        <div className="absolute bottom-10 w-full h-20 bg-red-900/80 flex items-center justify-center border-y-2 border-yellow-500">
+                           <div className="w-16 h-16 border-2 border-yellow-500 rotate-45 flex items-center justify-center">
+                              <span className="text-yellow-400 font-bold text-2xl -rotate-45">運</span>
+                           </div>
+                        </div>
+                        <div className="absolute -top-10 left-1/2 -translate-x-1/2">
+                           <div className="flex gap-2 animate-bounce">
+                             <div className="w-2 h-16 bg-yellow-100 border border-yellow-700 rounded-t"></div>
+                             <div className="w-2 h-12 bg-yellow-100 border border-yellow-700 rounded-t mt-4"></div>
+                             <div className="w-2 h-14 bg-yellow-100 border border-yellow-700 rounded-t mt-2"></div>
+                           </div>
+                        </div>
+                    </div>
+                    <p className="mt-8 text-yellow-300 text-xl font-bold animate-pulse text-center">誠心祈求中...</p>
+                  </div>
+                )}
+
+                {state === 'RESULT' && fortune && (
+                  <div className="animate-flip-in w-full max-w-sm bg-[#FFFDF5] rounded-lg shadow-[0_0_40px_rgba(255,215,0,0.3)] overflow-hidden border-8 border-double border-red-800 relative flex flex-col mx-auto h-full max-h-full">
+                    <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-red-800 rounded-tl-lg z-10 pointer-events-none"></div>
+                    <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-red-800 rounded-tr-lg z-10 pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-red-800 rounded-bl-lg z-10 pointer-events-none"></div>
+                    <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-red-800 rounded-br-lg z-10 pointer-events-none"></div>
+
+                    <div className="p-6 pb-24 flex flex-col items-center text-center flex-1 overflow-y-auto no-scrollbar bg-[url('https://www.transparenttextures.com/patterns/rice-paper.png')]">
+                      
+                      {/* 運勢標籤 */}
+                      <div className="mb-4 relative shrink-0">
+                        <div className="absolute inset-0 bg-red-600 transform rotate-3 rounded blur-sm opacity-50"></div>
+                        <div className={`relative px-6 py-2 text-3xl font-bold text-white border-2 border-yellow-400 shadow-md ${
+                          fortune.level === '大吉' ? 'bg-red-600' :
+                          fortune.level === '中吉' ? 'bg-orange-600' :
+                          fortune.level === '小吉' ? 'bg-yellow-600' : 'bg-stone-600'
+                        }`}>
+                          {fortune.level}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-center gap-2 text-red-800 mb-6 shrink-0">
+                        {fortune.icon}
+                        <span className="text-xl font-bold tracking-widest border-b-2 border-red-800 pb-1">{fortune.type}籤</span>
+                      </div>
+
+                      <h2 className="text-2xl font-bold text-black mb-6 tracking-[0.2em] shrink-0">{fortune.title}</h2>
+
+                      <div className="w-full space-y-3 mb-6 shrink-0">
+                        {fortune.poem.map((line, idx) => (
+                          <p key={idx} className="text-lg md:text-xl font-medium text-gray-800 font-serif leading-relaxed border-l-4 border-red-800/20 pl-4 text-left mx-auto max-w-[80%]">
+                            {line}
+                          </p>
+                        ))}
+                      </div>
+                      
+                      <div className="w-16 h-0.5 bg-red-800/30 mb-4 shrink-0"></div>
+
+                      <div className="bg-red-50 p-4 rounded text-left w-full border border-red-100 mb-4 shrink-0">
+                        <p className="text-red-900 text-sm md:text-base leading-relaxed">
+                          <span className="font-bold bg-red-200 px-1 rounded text-red-800 mr-2">解曰</span>
+                          {fortune.desc}
+                        </p>
+                      </div>
+
+                      {/* 折扣顯示區 (新春紅包) */}
+                      {discount && (
+                        <div className="w-full mb-4 shrink-0 animate-fade-in" style={{animationDelay: '0.3s'}}>
+                          <div className={`relative overflow-hidden rounded-lg border-2 ${discount.weight === 1 ? 'border-yellow-400 bg-red-600' : 'border-red-200 bg-white'} shadow-md p-3`}>
+                            {/* 閃光特效 (僅限 1% 大獎) */}
+                            {discount.weight === 1 && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse pointer-events-none"></div>
+                            )}
+                            
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-full ${discount.weight === 1 ? 'bg-yellow-400 text-red-700' : 'bg-red-100 text-red-600'}`}>
+                                <Gift className="w-6 h-6" />
+                              </div>
+                              <div className="text-left flex-1">
+                                <div className={`text-xs font-bold mb-0.5 ${discount.weight === 1 ? 'text-yellow-300' : 'text-red-400'}`}>
+                                  新春加碼紅包 (限當次使用，擷圖無效)
+                                </div>
+                                <div className={`text-xl font-bold ${discount.weight === 1 ? 'text-white' : 'text-red-800'}`}>
+                                  {discount.text}
+                                </div>
+                              </div>
+                            </div>
+                            {/* 裝飾印章 */}
+                            <div className="absolute -right-2 -bottom-2 w-16 h-16 border-4 border-red-500/20 rounded-full flex items-center justify-center transform -rotate-12 pointer-events-none">
+                               <span className="text-red-500/20 font-bold text-xs">神馬都好</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex flex-col w-full gap-3 mt-auto shrink-0 relative z-20">
+                        
+                        {showCopyTip && (
+                           <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-gray-900/90 text-white text-sm py-2 px-4 rounded-lg whitespace-nowrap animate-fade-in shadow-xl z-50 flex items-center gap-2">
+                             <Check className="w-4 h-4 text-green-400" />
+                             {tipMessage}
+                           </div>
+                         )}
+
+                        <div className="flex gap-2 w-full">
+                          <button 
+                            onClick={handleShare}
+                            className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-red-900 font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 shadow-sm transition-colors"
+                          >
+                            <Share2 className="w-5 h-5" />
+                            分享好運
+                          </button>
+
+                          <button 
+                            onClick={() => handleCopy(false)}
+                            className="bg-red-100 hover:bg-red-200 text-red-800 font-bold py-2 px-3 rounded-lg flex items-center justify-center shadow-sm transition-colors"
+                            title="複製籤文"
+                          >
+                             <Copy className="w-5 h-5" />
+                          </button>
+                        </div>
+
+                        <button 
+                          onClick={reset}
+                          className="w-full border-2 border-stone-300 hover:border-red-400 text-stone-500 hover:text-red-600 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-medium"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                          誠心再求一籤
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-8 text-yellow-500/40 text-xs text-center z-10">
+                © 2026 VOLARE 行動飛行劇院丙午年春節限定 · 祝您新春愉快 萬事如意
+              </div>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
